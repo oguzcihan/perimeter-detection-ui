@@ -63,9 +63,9 @@ function Login() {
     return (
         <div className="login-page">
             <Container>
-                <Row>
-                    <Col className="ml-auto mr-auto" lg="4" md="6">
-                        <Form onSubmit={handleLogin} className="form" >
+                <Row className="justify-center w-full mx-0">
+                    <Col className="mx-auto px-0 md:px-3" xs="12" sm="10" md="8" lg="12">
+                        <Form onSubmit={handleLogin} className="form w-full" >
                             <Card className="card-glass" style={{ width: '100%' }}>
                                 <CardHeader>
                                     <CardTitle tag="h3" className="header text-center">{t('auth.login_title')}</CardTitle>

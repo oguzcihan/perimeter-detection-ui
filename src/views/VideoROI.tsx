@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {Toolbar} from '../components/VideoROI/Toolbar';
-import {DrawingCanvas} from '../components/VideoROI/DrawingCanvas';
-import {useVideoContext} from '../context/VideoContext';
-import {useROIState} from '../hooks/useROIState';
-import type {DetectionItem, DetectionResponse} from '../types/detection';
-import {statsService} from '../services/statsService';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Toolbar } from '../components/VideoROI/Toolbar';
+import { DrawingCanvas } from '../components/VideoROI/DrawingCanvas';
+import { useVideoContext } from '../context/VideoContext';
+import { useROIState } from '../hooks/useROIState';
+import type { DetectionItem, DetectionResponse } from '../types/detection';
+import { statsService } from '../services/statsService';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -444,7 +444,7 @@ export default function VideoROI() {
 
     return (
         <div className="flex flex-col h-full w-full">
-            <div ref={fullscreenContainerRef} className="flex flex-row h-[calc(100vh-64px)] w-full bg-slate-900/50">
+            <div ref={fullscreenContainerRef} className="flex flex-col-reverse sm:flex-row h-[calc(100vh-140px)] sm:h-[calc(100vh-64px)] w-full bg-slate-900/50">
                 {/* TOOLBAR SIDE */}
                 <Toolbar
                     tool={roiState.tool}

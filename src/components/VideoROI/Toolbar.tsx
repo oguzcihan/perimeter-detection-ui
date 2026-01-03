@@ -58,7 +58,7 @@ export const Toolbar = ({
     };
 
     const ButtonClass = (active: boolean = false, danger: boolean = false) => `
-        w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 mb-2
+        w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 mb-0 sm:mb-2 flex-shrink-0
         ${active
             ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
             : danger
@@ -69,7 +69,7 @@ export const Toolbar = ({
 
     return (
         <div
-            className="flex flex-col items-center p-4 w-20 bg-slate-900 border-r border-slate-800 h-full z-30 shadow-xl"
+            className="flex flex-row sm:!flex-col items-center p-2 sm:p-4 w-full sm:w-20 h-16 sm:h-full bg-slate-900 border-t sm:border-t-0 sm:border-r border-slate-800 z-30 shadow-xl overflow-x-auto sm:!overflow-x-hidden overflow-y-hidden sm:!overflow-y-auto gap-2 sm:gap-0 no-scrollbar flex-shrink-0 flex-nowrap"
         >
             <label className={ButtonClass(false)} title={t('video_roi.toolbar.load_video')}>
                 <input
@@ -100,7 +100,7 @@ export const Toolbar = ({
                 </button>
             )}
 
-            <div className="w-full h-px bg-slate-800 my-4" />
+            <div className="w-px h-8 sm:w-full sm:h-px bg-slate-800 mx-2 sm:mx-0 sm:my-4 flex-shrink-0" />
 
             {/* DRAW BUTTON */}
             <button
@@ -129,7 +129,7 @@ export const Toolbar = ({
                 <FiTrash2 size={20} />
             </button>
 
-            <div className="w-full h-px bg-slate-800 my-4" />
+            <div className="w-px h-8 sm:w-full sm:h-px bg-slate-800 mx-2 sm:mx-0 sm:my-4 flex-shrink-0" />
 
             <button
                 onClick={onUndo}
@@ -155,14 +155,15 @@ export const Toolbar = ({
                 {isFullscreen ? <FiMinimize size={20} /> : <FiMaximize size={20} />}
             </button>
 
-            <div className="flex-1" /> {/* Spacer */}
+            <div className="flex-1 hidden sm:block" /> {/* Spacer Desktop */}
+            <div className="flex-1 sm:hidden" /> {/* Spacer Mobile - pushes play button to end if we want, or remove to keep compact */}
 
             <button
                 onClick={onToggleStream}
                 disabled={isLoading}
                 title={isLoading ? t('video_roi.connecting') : (isStreaming ? t('video_roi.toolbar.stop_processing') : t('video_roi.toolbar.start_processing'))}
                 className={`
-                    w-12 h-12 flex items-center justify-center rounded-full transition-all duration-300 shadow-lg scale-100 hover:scale-105 active:scale-95
+                    w-12 h-12 flex items-center justify-center rounded-full transition-all duration-300 shadow-lg scale-100 hover:scale-105 active:scale-95 flex-shrink-0 ml-auto sm:ml-0
                     ${isStreaming
                         ? 'bg-red-500 hover:bg-red-600 text-white shadow-red-500/30'
                         : 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/30'
