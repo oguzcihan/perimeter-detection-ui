@@ -114,4 +114,17 @@ export const statsService = {
         statsService.saveStats(stats);
         return stats;
     },
+
+    getBackendStats: async (): Promise<any> => {
+        try {
+            // Import api dynamically or use the global one if available, 
+            // but we need to ensure we import it from the module system.
+            const { default: api } = await import("./api");
+            const response = await api.get("/api/v1/stats");
+            return response.data;
+        } catch (error) {
+            console.error("Failed to fetch backend stats:", error);
+            throw error;
+        }
+    }
 };

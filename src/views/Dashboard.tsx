@@ -47,6 +47,32 @@ const FeedCard = ({ id, status, location }: { id: string, status: 'Active' | 'Of
 
 const Dashboard = () => {
     const { t } = useTranslation();
+    const [stats, setStats] = React.useState<{
+        total_detections: number;
+        breach_count: number;
+        alerts_triggered: number;
+        active_monitoring_sources: number;
+        camera_sessions: number;
+        video_sessions: number;
+    } | null>(null);
+
+    React.useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                // Dynamically import to avoid circular dependency issues if any
+                const { statsService } = await import('../services/statsService');
+                const data = await statsService.getBackendStats();
+                setStats(data);
+            } catch (err) {
+                console.error("Failed to load dashboard stats", err);
+            }
+        };
+
+        fetchStats();
+        // Poll every 5 seconds
+        const interval = setInterval(fetchStats, 5000);
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <div className="space-y-6">
@@ -69,29 +95,29 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard
                     title={t('dashboard.active_cameras')}
-                    value="24/24"
-                    label={t('dashboard.all_nominal')}
+                    value={stats ? `${stats.active_monitoring_sources}` : "..."}
+                    label="Active Streams"
                     icon={<FaCamera />}
                     color="emerald"
                 />
                 <StatCard
                     title={t('dashboard.intrusions')}
-                    value="02"
+                    value={stats ? stats.breach_count.toString().padStart(2, '0') : "..."}
                     label={t('dashboard.last_24h')}
                     icon={<FaExclamationTriangle />}
                     color="red"
                 />
                 <StatCard
-                    title={t('dashboard.uptime')}
-                    value="99.9%"
-                    label={t('dashboard.continuous')}
+                    title="Total Detections" // Changed from Uptime
+                    value={stats ? stats.total_detections.toLocaleString() : "..."}
+                    label={t('dashboard.last_24h')}
                     icon={<FaServer />}
                     color="blue"
                 />
                 <StatCard
                     title={t('dashboard.active_alerts')}
-                    value="0"
-                    label={t('dashboard.no_threats')}
+                    value={stats ? stats.alerts_triggered.toString() : "0"}
+                    label="Alerts Triggered"
                     icon={<FaBell />}
                     color="amber"
                 />
