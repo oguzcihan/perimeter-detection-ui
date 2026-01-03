@@ -1,7 +1,7 @@
 
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FaShieldAlt, FaChartLine, FaCogs, FaSignOutAlt, FaVideo, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaShieldAlt, FaChartLine, FaCogs, FaVideo, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';

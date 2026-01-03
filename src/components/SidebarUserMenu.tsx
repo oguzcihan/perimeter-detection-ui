@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaUser, FaCog, FaQuestionCircle, FaSignOutAlt, FaChevronUp, FaChevronRight } from 'react-icons/fa';
+import { FaUser, FaSignOutAlt, FaChevronUp } from 'react-icons/fa';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 
@@ -36,7 +36,6 @@ export const SidebarUserMenu: React.FC<SidebarUserMenuProps> = ({ user, isCollap
     }, [isCollapsed]);
 
     const username = user?.username || 'Admin User';
-    const email = user?.email || 'admin@perimeter-os.com'; // Placeholder if email missing
     const initial = username.charAt(0).toUpperCase();
 
     const menuItems = [

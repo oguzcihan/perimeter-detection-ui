@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Toolbar } from '../components/VideoROI/Toolbar';
-import { DrawingCanvas } from '../components/VideoROI/DrawingCanvas';
-import { useVideoContext } from '../context/VideoContext';
-import { useROIState } from '../hooks/useROIState';
-import type { DetectionItem, DetectionResponse } from '../types/detection';
-import { statsService } from '../services/statsService';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {Toolbar} from '../components/VideoROI/Toolbar';
+import {DrawingCanvas} from '../components/VideoROI/DrawingCanvas';
+import {useVideoContext} from '../context/VideoContext';
+import {useROIState} from '../hooks/useROIState';
+import type {DetectionItem, DetectionResponse} from '../types/detection';
+import {statsService} from '../services/statsService';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -65,7 +65,7 @@ async function captureFrameAsJpeg(
 
     ctx.drawImage(videoEl, srcX, srcY, clampedW, clampedH, 0, 0, clampedW, clampedH);
 
-    const blob: Blob = await new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
         canvas.toBlob(
             (b) => {
                 if (!b) reject(new Error("Failed to create JPEG blob"));
@@ -75,8 +75,6 @@ async function captureFrameAsJpeg(
             0.85 // Quality adjustment
         );
     });
-
-    return blob;
 }
 
 export default function VideoROI() {
@@ -168,30 +166,6 @@ export default function VideoROI() {
         };
     }, [videoState.nativeVideoSize.width, videoState.nativeVideoSize.height]);
 
-    const isCenterInRect = (
-        detection: DetectionItem,
-        roi: RectLike,
-        scaleX: number,
-        scaleY: number
-    ) => {
-        // Destructure bbox: [x, y, width, height]
-        const [x, y, w, h] = detection.bbox;
-
-        // Calculate center in Native Video coordinates
-        const nativeCenterX = x + (w / 2);
-        const nativeCenterY = y + (h / 2);
-
-        // Scale down to Display coordinates to compare with ROI
-        const displayCenterX = nativeCenterX / scaleX;
-        const displayCenterY = nativeCenterY / scaleY;
-
-        return (
-            displayCenterX >= roi.x &&
-            displayCenterX <= (roi.x + roi.width) &&
-            displayCenterY >= roi.y &&
-            displayCenterY <= (roi.y + roi.height)
-        );
-    };
     const calculateDisplaySize = useCallback(() => {
         const container = mainDisplayRef.current;
         if (!container || videoState.nativeVideoSize.width === 0) return;
