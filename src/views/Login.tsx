@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { FiUser, FiLock } from "react-icons/fi";
 import {
     Button,
     Card,
@@ -74,7 +75,7 @@ function Login() {
                                     {error && <Alert color="danger">{error}</Alert>}
                                     <InputGroup className="input-tech">
                                         <InputGroupText>
-                                            <i className="nc-icon nc-single-02" />
+                                            <FiUser size={20} />
                                         </InputGroupText>
                                         <Input
                                             placeholder={t('auth.username')}
@@ -86,7 +87,7 @@ function Login() {
                                     </InputGroup>
                                     <InputGroup className="mt-3 input-tech">
                                         <InputGroupText>
-                                            <i className="nc-icon nc-key-25" />
+                                            <FiLock size={20} />
                                         </InputGroupText>
                                         <Input
                                             placeholder={t('auth.password')}
