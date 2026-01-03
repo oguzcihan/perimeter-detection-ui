@@ -93,7 +93,7 @@ const AdminLayout = () => {
                 <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-b from-slate-900 via-transparent to-slate-900"></div>
 
                 {/* Top Header */}
-                <header className="h-16 bg-slate-900/80 backdrop-blur-md border-b border-slate-700 flex items-center justify-between px-8 z-10 sticky top-0">
+                <header className="h-16 bg-slate-900/80 backdrop-blur-md border-b border-slate-700 flex items-center justify-between px-8 z-50 sticky top-0">
                     <div className="flex items-center gap-4">
                         <div className="text-lg font-semibold text-slate-100 uppercase tracking-widest flex items-center gap-2">
                             <span className="text-emerald-500">I/O</span> Secure Dashboard
