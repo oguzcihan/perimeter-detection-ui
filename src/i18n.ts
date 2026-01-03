@@ -17,6 +17,12 @@ i18n
     .init({
         debug: true,
         fallbackLng: 'en',
+        supportedLngs: ['en', 'tr', 'de'],
+        detection: {
+            order: ['localStorage', 'navigator'],
+            caches: ['localStorage'],
+            lookupLocalStorage: 'i18nextLng'
+        },
         interpolation: {
             escapeValue: false, // not needed for react as it escapes by default
         },

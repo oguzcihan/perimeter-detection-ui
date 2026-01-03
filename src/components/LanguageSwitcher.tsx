@@ -17,7 +17,9 @@ export const LanguageSwitcher = ({ direction = 'down' }: { direction?: 'up' | 'd
         setIsOpen(false);
     };
 
-    const currentLang = languages.find(l => l.code === i18n.language) || languages[0];
+    const currentLang = languages.find(l => l.code === i18n.resolvedLanguage) ||
+        languages.find(l => l.code === i18n.language.split('-')[0]) ||
+        languages[0];
 
     // Close dropdown when clicking outside
     useEffect(() => {
