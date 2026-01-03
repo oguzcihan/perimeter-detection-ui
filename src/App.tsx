@@ -6,6 +6,7 @@ import Dashboard from './views/Dashboard';
 import VideoROI from './views/VideoROI';
 import Settings from './views/Settings';
 import Statistics from './views/Statistics';
+import EditProfile from './views/EditProfile';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { VideoProvider } from './context/VideoContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -51,6 +52,7 @@ function App() {
               <Route index element={<Dashboard />} />
               <Route path="video-roi" element={<VideoROI />} />
               <Route path="settings" element={<Settings />} />
+              <Route path="edit-profile" element={<EditProfile />} />
               <Route path="statistics" element={<Statistics />} />
               <Route path="feeds" element={<Placeholder title="Live Camera Feeds" />} />
               <Route path="system" element={<Placeholder title="System Status & Diagnostics" />} />

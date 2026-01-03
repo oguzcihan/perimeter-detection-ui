@@ -39,8 +39,20 @@ function Login() {
             const response = await axios.post("http://localhost:8000/api/v1/token", formData);
 
             const { access_token } = response.data;
-            login(access_token, username);
-            navigate("/dashboard");
+
+            // Temporary token set for the request
+            localStorage.setItem('access_token', access_token);
+
+            // Fetch validation and full user details
+            try {
+                const { getCurrentUser } = await import("../services/userService");
+                const userData = await getCurrentUser();
+                login(access_token, userData);
+                navigate("/dashboard");
+            } catch (userError) {
+                console.error("Failed to fetch user details", userError);
+                setError("Login succeeded but failed to load user profile.");
+            }
         } catch (err: any) {
             console.error("Login failed", err);
             if (err.response && err.response.status === 401) {

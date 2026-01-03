@@ -1,16 +1,19 @@
 
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FaShieldAlt, FaChartLine, FaCogs, FaSignOutAlt, FaVideo } from 'react-icons/fa';
+import { FaShieldAlt, FaChartLine, FaCogs, FaSignOutAlt, FaVideo, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
+import { useState } from 'react';
+import { SidebarUserMenu } from '../components/SidebarUserMenu';
 
 const AdminLayout = () => {
     const { logout, user } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const { t } = useTranslation();
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
     const handleLogout = () => {
         logout();
@@ -29,60 +32,67 @@ const AdminLayout = () => {
     return (
         <div className="flex h-screen bg-slate-900 text-slate-100 overflow-hidden font-sans">
             {/* Sidebar */}
-            <aside className="w-64 bg-slate-800 border-r border-slate-700 flex flex-col shadow-2xl z-20">
-                <div className="h-16 flex items-center justify-center border-b border-slate-700 bg-slate-900/50">
-                    <div className="flex items-center gap-2 text-emerald-400 font-bold text-xl tracking-wider">
-                        <FaShieldAlt className="text-2xl" />
-                        <span>PERIMETER<span className="text-white">OS</span></span>
+            <aside
+                className={classNames(
+                    "bg-slate-800 border-r border-slate-700 flex flex-col shadow-2xl z-20 transition-all duration-300 ease-in-out relative",
+                    isSidebarCollapsed ? "w-20" : "w-64"
+                )}
+            >
+                {/* Toggle Button */}
+                <button
+                    onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                    className="absolute -right-3 top-20 bg-slate-700 border border-slate-600 text-slate-300 rounded-full p-1.5 shadow-md hover:bg-slate-600 hover:text-white transition-colors z-30 transform hover:scale-110"
+                    title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+                >
+                    {isSidebarCollapsed ? <FaChevronRight size={12} /> : <FaChevronLeft size={12} />}
+                </button>
+
+                <div className="h-16 flex items-center justify-center border-b border-slate-700 bg-slate-900/50 overflow-hidden">
+                    <div className="flex items-center gap-2 text-emerald-400 font-bold text-xl tracking-wider whitespace-nowrap">
+                        <FaShieldAlt className="text-2xl min-w-[24px]" />
+                        <span className={classNames("transition-opacity duration-200", isSidebarCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100")}>
+                            PERIMETER<span className="text-white">OS</span>
+                        </span>
                     </div>
                 </div>
 
-                <nav className="flex-1 py-6 px-3 space-y-2">
+                <nav className="flex-1 py-6 px-3 space-y-2 overflow-x-hidden">
                     {sidebarItems.map((item) => (
                         <button
                             key={item.path}
                             onClick={() => navigate(item.path)}
+                            title={isSidebarCollapsed ? item.label : undefined}
                             className={classNames(
-                                "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group text-sm font-medium",
+                                "w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group text-sm font-medium",
                                 location.pathname === item.path
                                     ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
-                                    : "text-slate-400 hover:bg-slate-700/50 hover:text-slate-200"
+                                    : "text-slate-400 hover:bg-slate-700/50 hover:text-slate-200",
+                                isSidebarCollapsed ? "justify-center" : "justify-start"
                             )}
                         >
-                            <span className={classNames("text-lg", location.pathname === item.path ? "text-emerald-400" : "text-slate-500 group-hover:text-slate-300")}>
+                            <span className={classNames(
+                                "text-lg flex-shrink-0 transition-colors duration-200",
+                                location.pathname === item.path ? "text-emerald-400" : "text-slate-500 group-hover:text-slate-300"
+                            )}>
                                 {item.icon}
                             </span>
-                            {item.label}
+                            <span className={classNames(
+                                "whitespace-nowrap transition-all duration-200 origin-left",
+                                isSidebarCollapsed ? "hidden opacity-0 w-0" : "block opacity-100"
+                            )}>
+                                {item.label}
+                            </span>
                         </button>
                     ))}
                 </nav>
 
-                <div className="p-4 border-t border-slate-700 bg-slate-900/30">
-                    <div className="flex items-center gap-3 mb-4 px-2">
-                        <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-xs font-bold border border-emerald-500/30">
-                            {user && user.username ? user.username.charAt(0).toUpperCase() : 'A'}
-                        </div>
-                        <div className="flex-1 overflow-hidden">
-                            <p className="text-sm font-medium text-slate-200 truncate">{user?.username || 'Admin'}</p>
-                            <p className="text-xs text-emerald-500 flex items-center gap-1">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                Online
-                            </p>
-                        </div>
-
-                    </div>
-                    <button
-                        onClick={handleLogout}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors text-sm font-medium border border-red-500/20"
-                    >
-                        <FaSignOutAlt />
-                        {t('sidebar.logout')}
-                    </button>
+                <div className="mt-auto">
+                    <SidebarUserMenu user={user} isCollapsed={isSidebarCollapsed} onLogout={handleLogout} />
                 </div>
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 flex flex-col relative overflow-hidden">
+            <main className="flex-1 flex flex-col relative overflow-hidden transition-all duration-300">
                 {/* Background Grid Effect */}
                 <div className="absolute inset-0 z-0 pointer-events-none"
                     style={{
