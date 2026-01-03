@@ -114,6 +114,7 @@ export default function VideoROI() {
     const roiRectsRef = useRef<RectLike[]>([]);
     const videoSizeRef = useRef(videoSize);
     const nativeSizeRef = useRef({width: 0, height: 0});
+    const shouldAutoStartRef = useRef(false);
 
     useEffect(() => {
         roiRectsRef.current = (roiState.rectangles as unknown as RectLike[]) ?? [];
@@ -186,7 +187,7 @@ export default function VideoROI() {
         setLastResult(null);
 
         if (videoRef.current && !videoState.isCameraActive) {
-            if (!videoRef.current.paused && !videoRef.current.ended) {
+            if (!videoRef.current.paused) {
                 videoRef.current.pause();
             }
         }
@@ -240,6 +241,7 @@ export default function VideoROI() {
         if (wsRef.current && (wsRef.current.readyState === WebSocket.CONNECTING || wsRef.current.readyState === WebSocket.OPEN)) {
             return;
         }
+        shouldAutoStartRef.current = true;
 
         setIsLoading(true);
         const wsUrl = `${toWsUrl(API_BASE_URL)}/ws/detect`;
@@ -334,8 +336,9 @@ export default function VideoROI() {
 
 
     useEffect(() => {
-        if (isConnected && !isStreaming) {
+        if (isConnected && !isStreaming && shouldAutoStartRef.current) {
             startProcessing();
+            shouldAutoStartRef.current = false;
         }
     }, [isConnected, startProcessing, isStreaming]);
 

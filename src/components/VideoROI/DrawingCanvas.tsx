@@ -1,8 +1,8 @@
-import { Stage, Layer, Rect, Text as KonvaText, Group } from "react-konva";
-import type { Rect as RectType, Tool } from "../../hooks/useROIState";
-import type { KonvaEventObject } from "konva/lib/Node";
-import type { DetectionItem } from "../../types/detection";
-import { useTranslation } from "react-i18next";
+import {Stage, Layer, Rect, Text as KonvaText, Group} from "react-konva";
+import type {Rect as RectType, Tool} from "../../hooks/useROIState";
+import type {KonvaEventObject} from "konva/lib/Node";
+import type {DetectionItem} from "../../types/detection";
+import {useTranslation} from "react-i18next";
 
 
 interface DrawingCanvasProps {
@@ -24,25 +24,25 @@ interface DrawingCanvasProps {
 }
 
 export const DrawingCanvas = ({
-    width,
-    height,
-    nativeSize,
-    rectangles,
-    newRect,
-    tool,
-    isDrawing,
-    detections = [],
-    setNewRect,
-    setIsDrawing,
-    addRectangle,
-    updateRectangle,
-    deleteRectangle,
-    confirmed_breach = false,
-    breach = false
+                                  width,
+                                  height,
+                                  nativeSize,
+                                  rectangles,
+                                  newRect,
+                                  tool,
+                                  isDrawing,
+                                  detections = [],
+                                  setNewRect,
+                                  setIsDrawing,
+                                  addRectangle,
+                                  updateRectangle,
+                                  deleteRectangle,
+                                  confirmed_breach = false,
+                                  breach = false
 
-}: DrawingCanvasProps) => {
+                              }: DrawingCanvasProps) => {
 
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const scaleX = width / (nativeSize.width || 1);
     const scaleY = height / (nativeSize.height || 1);
@@ -53,7 +53,7 @@ export const DrawingCanvas = ({
         const stage = e.target.getStage();
         const pointer = stage?.getPointerPosition();
         if (pointer) {
-            setNewRect({ x: pointer.x, y: pointer.y, width: 0, height: 0 });
+            setNewRect({x: pointer.x, y: pointer.y, width: 0, height: 0});
             setIsDrawing(true);
         }
     };
@@ -92,8 +92,8 @@ export const DrawingCanvas = ({
 
 
     const handleDragEnd = (id: number, e: KonvaEventObject<DragEvent>) => {
-        const { x, y } = e.target.position();
-        updateRectangle(id, { x, y });
+        const {x, y} = e.target.position();
+        updateRectangle(id, {x, y});
     };
 
     const handleClick = (id: number) => {
@@ -105,14 +105,18 @@ export const DrawingCanvas = ({
     // Triggered when mouse enters the rectangle
     const handleMouseEnter = (e: KonvaEventObject<MouseEvent>) => {
         // Change cursor only if 'delete' or 'move' tool is active
-        if (tool === "delete" || tool === "move") {
-            const stage = e.target.getStage();
-            const container = stage?.container();
-            if (container) {
-                // 'pointer' cursor for delete, 'move' cursor for move
-                container.style.cursor = tool === "delete" ? "pointer" : "move";
+
+        const stage = e.target.getStage();
+        const container = stage?.container();
+        if (container) {
+            if (tool === "delete") {
+                container.style.cursor = "pointer";
+            } else if (tool === "move" || tool === "draw") {
+                // Allow move cursor if we are in move OR draw mode
+                container.style.cursor = "move";
             }
         }
+
     };
 
     // Triggered when mouse leaves the rectangle
@@ -149,7 +153,7 @@ export const DrawingCanvas = ({
                         height={rect.height}
                         stroke="yellow"
                         strokeWidth={2}
-                        draggable={tool === "move"}
+                        draggable={tool === "move" || tool === "draw"}
                         onClick={() => handleClick(rect.id)}
                         onDragEnd={(e) => handleDragEnd(rect.id, e)}
                         onMouseEnter={handleMouseEnter}
