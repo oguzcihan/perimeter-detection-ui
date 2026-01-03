@@ -8,7 +8,8 @@ import {
     FiMinimize,
     FiMaximize,
     FiPlay,      // Start icon
-    FiStopCircle //  Stop icon
+    FiStopCircle, //  Stop icon
+    FiXCircle    // Clear Video icon
 } from "react-icons/fi";
 import { BsEraser } from "react-icons/bs";
 import type { Tool } from "../../hooks/useROIState";
@@ -23,6 +24,7 @@ interface ToolbarProps {
     onOpenCamera: () => void;
     onUndo: () => void;
     onClear: () => void;
+    onClearVideo?: () => void; // [NEW] Optional to avoid breaking other usages if any
     onToggleFullscreen: () => void;
     isStreaming: boolean; // Controls streaming state
     onToggleStream: () => void;
@@ -38,6 +40,7 @@ export const Toolbar = ({
     onOpenCamera,
     onUndo,
     onClear,
+    onClearVideo,
     onToggleFullscreen,
     isStreaming,
     onToggleStream,
@@ -85,6 +88,17 @@ export const Toolbar = ({
             >
                 <FiCamera size={20} />
             </button>
+
+            {/* Clear Video Button */}
+            {onClearVideo && (
+                <button
+                    onClick={onClearVideo}
+                    className={ButtonClass(false, true)}
+                    title={t('video_roi.toolbar.clear_video') || "Clear Video"}
+                >
+                    <FiXCircle size={20} />
+                </button>
+            )}
 
             <div className="w-full h-px bg-slate-800 my-4" />
 

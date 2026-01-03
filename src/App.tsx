@@ -7,6 +7,7 @@ import VideoROI from './views/VideoROI';
 import Settings from './views/Settings';
 import Statistics from './views/Statistics';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { VideoProvider } from './context/VideoContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ToastContainer } from 'react-toastify';
 
@@ -30,34 +31,36 @@ const PublicRoute = ({ children }: { children: React.ReactElement }) => {
 function App() {
   return (
     <AuthProvider>
-      <ToastContainer position="top-right" autoClose={3000} />
-      <Routes>
-        <Route path="/login" element={
-          <PublicRoute>
-            <AuthLayout />
-          </PublicRoute>
-        } />
-        <Route path="/register" element={
-          <PublicRoute>
-            <AuthLayout />
-          </PublicRoute>
-        } />
+      <VideoProvider>
+        <ToastContainer position="top-right" autoClose={3000} />
+        <Routes>
+          <Route path="/login" element={
+            <PublicRoute>
+              <AuthLayout />
+            </PublicRoute>
+          } />
+          <Route path="/register" element={
+            <PublicRoute>
+              <AuthLayout />
+            </PublicRoute>
+          } />
 
-        {/* Protected Routes */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/dashboard" element={<AdminLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="video-roi" element={<VideoROI />} />
-            <Route path="settings" element={<Settings />} />
-            <Route path="statistics" element={<Statistics />} />
-            <Route path="feeds" element={<Placeholder title="Live Camera Feeds" />} />
-            <Route path="system" element={<Placeholder title="System Status & Diagnostics" />} />
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<AdminLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="video-roi" element={<VideoROI />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="statistics" element={<Statistics />} />
+              <Route path="feeds" element={<Placeholder title="Live Camera Feeds" />} />
+              <Route path="system" element={<Placeholder title="System Status & Diagnostics" />} />
+            </Route>
           </Route>
-        </Route>
 
-        {/* Default Redirect */}
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
-      </Routes>
+          {/* Default Redirect */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </VideoProvider>
     </AuthProvider>
   );
 }
