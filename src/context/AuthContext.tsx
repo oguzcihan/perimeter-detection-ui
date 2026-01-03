@@ -35,6 +35,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     useEffect(() => {
         // Check if token exists and set configured axios headers
+        axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
         if (token) {
             localStorage.setItem("access_token", token);
             axios.defaults.headers.common["Authorization"] = "Bearer " + token;

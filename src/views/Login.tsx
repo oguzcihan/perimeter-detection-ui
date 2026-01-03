@@ -36,7 +36,7 @@ function Login() {
             formData.append("username", username);
             formData.append("password", password);
 
-            const response = await api.post("/token", formData);
+            const response = await api.post("/api/v1/token", formData);
 
             const { access_token } = response.data;
 
