@@ -17,8 +17,8 @@ import {
 } from "reactstrap";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.tsx";
-import axios from "axios";
 import { useTranslation } from "react-i18next";
+import api from "../services/api";
 
 function Login() {
     const { t } = useTranslation();
@@ -36,23 +36,20 @@ function Login() {
             formData.append("username", username);
             formData.append("password", password);
 
-            const response = await axios.post("http://localhost:8000/api/v1/token", formData);
+            const response = await api.post("/token", formData);
 
             const { access_token } = response.data;
 
-            // Temporary token set for the request
-            localStorage.setItem('access_token', access_token);
+            // Set token temporarily to allow fetching user details
+            localStorage.setItem("access_token", access_token);
+            // api interceptor handles adding token to future requests
 
-            // Fetch validation and full user details
-            try {
-                const { getCurrentUser } = await import("../services/userService");
-                const userData = await getCurrentUser();
-                login(access_token, userData);
-                navigate("/dashboard");
-            } catch (userError) {
-                console.error("Failed to fetch user details", userError);
-                setError("Login succeeded but failed to load user profile.");
-            }
+            // Fetch user details including email
+            const { getCurrentUser } = await import("../services/userService");
+            const user = await getCurrentUser();
+
+            login(access_token, user);
+            navigate("/dashboard");
         } catch (err: any) {
             console.error("Login failed", err);
             if (err.response && err.response.status === 401) {

@@ -7,7 +7,7 @@ import { useROIState } from '../hooks/useROIState';
 import type { DetectionItem, DetectionResponse } from '../types/detection';
 import { statsService } from '../services/statsService';
 
-const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL ?? "http://localhost:8000/api/v1";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // Helper types if they are not exported or to match usage
 
@@ -281,7 +281,7 @@ export default function VideoROI() {
         shouldAutoStartRef.current = true;
 
         setIsLoading(true);
-        const wsUrl = `${toWsUrl(API_BASE_URL)}/ws/detect`;
+        const wsUrl = `${toWsUrl(API_BASE_URL)}/api/v1/ws/detect`;
         const ws = new WebSocket(wsUrl);
         ws.binaryType = "arraybuffer";
         wsRef.current = ws;

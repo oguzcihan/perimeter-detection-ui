@@ -16,8 +16,8 @@ import {
     Alert
 } from "reactstrap";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
 import { useTranslation } from "react-i18next";
+import api from "../services/api";
 
 function Register() {
     const { t } = useTranslation();
@@ -31,7 +31,7 @@ function Register() {
         e.preventDefault();
         setError(null);
         try {
-            await axios.post("http://localhost:8000/api/v1/register", {
+            await api.post("/api/v1/register", {
                 email,
                 username,
                 password

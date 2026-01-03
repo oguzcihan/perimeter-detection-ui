@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { FaCog, FaInfoCircle, FaSave, FaServer } from "react-icons/fa";
 import { useTranslation } from 'react-i18next';
+import api from "../services/api";
 
 // Define the shape of our configuration based on backend Pydantic model
 interface SystemConfig {
@@ -23,10 +23,6 @@ export default function Settings() {
     const [loading, setLoading] = useState<boolean>(false);
     const [saving, setSaving] = useState<boolean>(false);
 
-    // API Base URL (adjust port if needed, e.g., localhost:8000)
-    const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL ?? "http://localhost:8000/api/v1";
-    const API_URL = `${API_BASE_URL}/config`;
-
     // Load current settings on mount
     useEffect(() => {
         fetchSettings();
@@ -35,7 +31,7 @@ export default function Settings() {
     const fetchSettings = async () => {
         setLoading(true);
         try {
-            const response = await axios.get<SystemConfig>(API_URL);
+            const response = await api.get<SystemConfig>("/api/v1/config");
             setConfig(response.data);
         } catch (error) {
             console.error("Error fetching settings:", error);
@@ -57,7 +53,7 @@ export default function Settings() {
         e.preventDefault();
         setSaving(true);
         try {
-            await axios.post(API_URL, config);
+            await api.post("/api/v1/config", config);
             toast.success(t('settings.success_update'));
         } catch (error) {
             console.error("Error updating settings:", error);
