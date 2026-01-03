@@ -1,0 +1,116 @@
+{
+    "common": {
+        "loading": "Wird geladen...",
+        "saving": "Wird gespeichert...",
+        "save": "Änderungen speichern",
+        "cancel": "Abbrechen",
+        "system_active": "System Aktiv",
+        "ready_to_stream": "Bereit zum Streamen",
+        "disconnected": "Getrennt",
+        "connecting": "Verbindung wird hergestellt..."
+    },
+    "settings": {
+        "title": "Systemkonfiguration",
+        "subtitle": "Passen Sie Erkennungsparameter und Systemschwellenwerte an.",
+        "detection_params": "Erkennungsparameter",
+        "calibration_guide": "Kalibrierungsleitfaden",
+        "confidence_threshold": "Vertrauensschwelle (0.0 - 1.0)",
+        "confidence_desc": "Niedrigere Werte erkennen mehr Objekte, erhöhen jedoch Fehlalarme.",
+        "alarm_distance": "Alarmabstand (Meter)",
+        "alarm_desc": "Alarm auslösen, wenn das Objekt näher als dieser Abstand ist.",
+        "focal_length": "Kamerabrennweite (px)",
+        "focal_desc": "Wird für die Entfernungsberechnungslogik verwendet.",
+        "breach_threshold": "Verstoßbestätigung (Frames)",
+        "breach_desc": "Anzahl aufeinanderfolgender Frames zur Bestätigung eines Verstoßes.",
+        "success_update": "Einstellungen erfolgreich aktualisiert!",
+        "error_update": "Einstellungen konnten nicht aktualisiert werden. Eingaben prüfen.",
+        "error_fetch": "Aktuelle Einstellungen konnten nicht geladen werden.",
+        "focal_guide": "Brennweite",
+        "focal_guide_text": "Kalibrieren Sie, indem Sie ein Objekt bekannter Breite in bekannter Entfernung platzieren. Formel: F = (P x D) / W.",
+        "confidence_guide": "Vertrauenswert",
+        "confidence_guide_text": "Empfohlener Bereich ist 0.25 - 0.50 für Standard-CCTV. Höhere Werte reduzieren Fehlalarme, können aber entfernte Objekte übersehen.",
+        "changes_apply": "Änderungen werden sofort auf das Backend angewendet."
+    },
+    "sidebar": {
+        "dashboard": "Dashboard",
+        "video_roi": "Video & ROI",
+        "settings": "Einstellungen",
+        "logout": "Abmelden",
+        "live_feeds": "Live-Feeds",
+        "system_status": "Systemstatus",
+        "statistics": "Statistiken"
+    },
+    "dashboard": {
+        "title": "Sektorübersicht",
+        "subtitle": "Echtzeit-Perimeterüberwachung und Bedrohungserkennung.",
+        "health_check": "Systemzustandsprüfung",
+        "generate_report": "Bericht erstellen",
+        "active_cameras": "Aktive Kameras",
+        "all_nominal": "Alle Systeme nominal",
+        "intrusions": "Erkannte Eindringlinge",
+        "last_24h": "Letzte 24 Stunden",
+        "uptime": "Systemlaufzeit",
+        "continuous": "324 Tage ununterbrochen",
+        "active_alerts": "Aktive Warnungen",
+        "no_threats": "Keine aktuellen Bedrohungen",
+        "live_surveillance": "Live-Überwachung",
+        "security_logs": "Sicherheitsprotokolle"
+    },
+    "status": {
+        "normal": "SYSTEMSTATUS: NORMAL"
+    },
+    "video_roi": {
+        "connecting": "Verbinden...",
+        "system_active": "System Aktiv (Analyse)",
+        "ready": "Bereit zum Streamen",
+        "disconnected": "Getrennt",
+        "no_video": "Keine Videoquelle",
+        "load_video_prompt": "Bitte laden Sie eine Videodatei oder aktivieren Sie die Kamera in der Symbolleiste, um die Erkennung zu starten.",
+        "toolbar": {
+            "load_video": "Video laden",
+            "open_camera": "Kamera öffnen",
+            "close_camera": "Kamera schließen",
+            "draw_roi": "ROI zeichnen",
+            "move_roi": "ROI verschieben",
+            "delete_roi": "ROI löschen",
+            "undo": "Rückgängig",
+            "clear": "Löschen",
+            "enter_fullscreen": "Vollbildmodus",
+            "exit_fullscreen": "Vollbildmodus beenden",
+            "start_processing": "Verarbeitung starten",
+            "stop_processing": "Verarbeitung stoppen"
+        },
+        "canvas": {
+            "caution": "⚠️ ACHTUNG: AKTIVITÄT",
+            "breach": "⚠️ WARNUNG: VERLETZUNG!"
+        }
+    },
+    "auth": {
+        "login_title": "Anmelden",
+        "register_title": "Registrieren",
+        "username": "Benutzername",
+        "password": "Passwort",
+        "email": "E-Mail",
+        "login_button": "Anmelden",
+        "register_button": "Loslegen",
+        "create_account": "Konto erstellen",
+        "already_have_account": "Haben Sie bereits ein Konto? Anmelden",
+        "error_invalid_credentials": "Ungültiger Benutzername oder Passwort.",
+        "error_login_generic": "Ein Fehler ist während der Anmeldung aufgetreten. Läuft das Backend?",
+        "error_registration_generic": "Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut."
+    },
+    "statistics": {
+        "title": "Systemstatistiken",
+        "subtitle": "Überblick über Systemleistung und Erkennungsprotokolle.",
+        "reset_stats": "Statistiken zurücksetzen",
+        "logs_title": "Erkennungs- und Systemprotokolle",
+        "timestamp": "Zeitstempel",
+        "type": "Typ",
+        "details": "Details",
+        "confirm_reset_title": "Reset bestätigen",
+        "confirm_reset_message": "Sind Sie sicher, dass Sie alle Statistiken und Protokolle löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+        "reset_success": "Statistiken wurden zurückgesetzt.",
+        "no_logs": "Keine Protokolle verfügbar.",
+        "showing_page": "Seite {{current}} von {{total}} wird angezeigt"
+    }
+}

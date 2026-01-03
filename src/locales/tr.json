@@ -1,0 +1,116 @@
+{
+    "common": {
+        "loading": "Yükleniyor...",
+        "saving": "Kaydediliyor...",
+        "save": "Değişiklikleri Kaydet",
+        "cancel": "İptal",
+        "system_active": "Sistem Aktif",
+        "ready_to_stream": "Yayına Hazır",
+        "disconnected": "Bağlantı Kesildi",
+        "connecting": "Bağlanıyor..."
+    },
+    "settings": {
+        "title": "Sistem Yapılandırması",
+        "subtitle": "Algılama parametrelerini ve sistem eşiklerini ayarlayın.",
+        "detection_params": "Algılama Parametreleri",
+        "calibration_guide": "Kalibrasyon Rehberi",
+        "confidence_threshold": "Güven Eşiği (0.0 - 1.0)",
+        "confidence_desc": "Daha düşük değerler daha fazla nesne algılar ancak yanlış alarmları artırır.",
+        "alarm_distance": "Alarm Mesafesi (Metre)",
+        "alarm_desc": "Nesne bu mesafeden daha yakınsa alarm tetiklenir.",
+        "focal_length": "Kamera Odak Uzaklığı (px)",
+        "focal_desc": "Mesafe hesaplama mantığı için kullanılır.",
+        "breach_threshold": "İhlal Doğrulama (Kare)",
+        "breach_desc": "Bir ihlali doğrulamak için gereken ardışık kare sayısı.",
+        "success_update": "Ayarlar başarıyla güncellendi!",
+        "error_update": "Ayarlar güncellenemedi. Girişleri kontrol edin.",
+        "error_fetch": "Mevcut ayarlar yüklenemedi.",
+        "focal_guide": "Odak Uzaklığı",
+        "focal_guide_text": "Bilinen genişliğe sahip bir nesneyi bilinen bir mesafeye yerleştirerek kalibre edin. Formül: F = (P x D) / W.",
+        "confidence_guide": "Güven Skoru",
+        "confidence_guide_text": "Standart CCTV için önerilen aralık 0.25 - 0.50'dir. Daha yüksek değerler yanlış alarmları azaltır ancak uzaktaki nesneleri kaçırabilir.",
+        "changes_apply": "Değişiklikler işleme sunucusuna hemen uygulanır."
+    },
+    "sidebar": {
+        "dashboard": "Panel",
+        "video_roi": "Video & ROI",
+        "settings": "Ayarlar",
+        "logout": "Çıkış Yap",
+        "live_feeds": "Canlı Yayınlar",
+        "system_status": "Sistem Durumu",
+        "statistics": "İstatistikler"
+    },
+    "dashboard": {
+        "title": "Sektör Genel Bakış",
+        "subtitle": "Gerçek zamanlı çevre izleme ve tehdit algılama.",
+        "health_check": "Sistem Sağlık Kontrolü",
+        "generate_report": "Rapor Oluştur",
+        "active_cameras": "Aktif Kameralar",
+        "all_nominal": "Tüm sistemler normal",
+        "intrusions": "Algılanan İhlaller",
+        "last_24h": "Son 24 saat",
+        "uptime": "Sistem Çalışma Süresi",
+        "continuous": "324 Gün kesintisiz",
+        "active_alerts": "Aktif Alarmlar",
+        "no_threats": "Tehdit yok",
+        "live_surveillance": "Canlı İzleme",
+        "security_logs": "Güvenlik Kayıtları"
+    },
+    "status": {
+        "normal": "SİSTEM DURUMU: NORMAL"
+    },
+    "video_roi": {
+        "connecting": "Bağlanıyor...",
+        "system_active": "Sistem Aktif (Analiz Ediliyor)",
+        "ready": "Yayına Hazır",
+        "disconnected": "Bağlantı Kesildi",
+        "no_video": "Video Kaynağı Yok",
+        "load_video_prompt": "Tespite başlamak için lütfen bir video dosyası yükleyin veya araç çubuğundan kamerayı etkinleştirin.",
+        "toolbar": {
+            "load_video": "Video Yükle",
+            "open_camera": "Kamerayı Aç",
+            "close_camera": "Kamerayı Kapat",
+            "draw_roi": "ROI Çiz",
+            "move_roi": "ROI Taşı",
+            "delete_roi": "ROI Sil",
+            "undo": "Geri Al",
+            "clear": "Temizle",
+            "enter_fullscreen": "Tam Ekran",
+            "exit_fullscreen": "Tam Ekranda Çık",
+            "start_processing": "İşlemi Başlat",
+            "stop_processing": "İşlemi Durdur"
+        },
+        "canvas": {
+            "caution": "⚠️ DİKKAT: HAREKET",
+            "breach": "⚠️ UYARI: İHLAL!"
+        }
+    },
+    "auth": {
+        "login_title": "Giriş Yap",
+        "register_title": "Kayıt Ol",
+        "username": "Kullanıcı Adı",
+        "password": "Şifre",
+        "email": "E-posta",
+        "login_button": "Giriş Yap",
+        "register_button": "Başlayın",
+        "create_account": "Hesap Oluştur",
+        "already_have_account": "Hesabınız var mı? Giriş Yapın",
+        "error_invalid_credentials": "Geçersiz kullanıcı adı veya şifre.",
+        "error_login_generic": "Giriş sırasında bir hata oluştu. Backend çalışıyor mu?",
+        "error_registration_generic": "Kayıt başarısız. Lütfen tekrar deneyin."
+    },
+    "statistics": {
+        "title": "Sistem İstatistikleri",
+        "subtitle": "Sistem performansı ve tespit kayıtlarına genel bakış.",
+        "reset_stats": "İstatistikleri Sıfırla",
+        "logs_title": "Tespit ve Sistem Kayıtları",
+        "timestamp": "Zaman Damgası",
+        "type": "Tip",
+        "details": "Detaylar",
+        "confirm_reset_title": "Sıfırlamayı Onayla",
+        "confirm_reset_message": "Tüm istatistikleri ve kayıtları temizlemek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+        "reset_success": "İstatistikler sıfırlandı.",
+        "no_logs": "Kayıt bulunamadı.",
+        "showing_page": "Sayfa {{current}} / {{total}} gösteriliyor"
+    }
+}

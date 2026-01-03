@@ -1,0 +1,116 @@
+{
+    "common": {
+        "loading": "Loading...",
+        "saving": "Saving...",
+        "save": "Save Changes",
+        "cancel": "Cancel",
+        "system_active": "System Active",
+        "ready_to_stream": "Ready to Stream",
+        "disconnected": "Disconnected",
+        "connecting": "Connecting..."
+    },
+    "settings": {
+        "title": "System Configuration",
+        "subtitle": "Adjust detection parameters and system thresholds.",
+        "detection_params": "Detection Parameters",
+        "calibration_guide": "Calibration Guide",
+        "confidence_threshold": "Confidence Threshold (0.0 - 1.0)",
+        "confidence_desc": "Lower values detect more objects but increase false positives.",
+        "alarm_distance": "Alarm Distance (Meters)",
+        "alarm_desc": "Trigger alarm if object is closer than this distance.",
+        "focal_length": "Camera Focal Length (px)",
+        "focal_desc": "Used for distance calculation logic.",
+        "breach_threshold": "Breach Confirmation (Frames)",
+        "breach_desc": "Consecutive frames needed to confirm a breach.",
+        "success_update": "Settings updated successfully!",
+        "error_update": "Failed to update settings. Check inputs.",
+        "error_fetch": "Failed to load current settings.",
+        "focal_guide": "Focal Length",
+        "focal_guide_text": "Calibrate by placing an object of known width at a known distance. Use the formula: F = (P x D) / W.",
+        "confidence_guide": "Confidence Score",
+        "confidence_guide_text": "Recommended range is 0.25 - 0.50 for standard CCTV. Higher values reduce false alarms but may miss distant objects.",
+        "changes_apply": "Changes apply immediately to the processing backend."
+    },
+    "sidebar": {
+        "dashboard": "Dashboard",
+        "video_roi": "Video & ROI",
+        "settings": "Settings",
+        "logout": "Sign Out",
+        "live_feeds": "Live Feeds",
+        "system_status": "System Status",
+        "statistics": "Statistics"
+    },
+    "dashboard": {
+        "title": "Sector Overview",
+        "subtitle": "Real-time perimeter monitoring and threat detection.",
+        "health_check": "System Health Check",
+        "generate_report": "Generate Report",
+        "active_cameras": "Active Cameras",
+        "all_nominal": "All systems nominal",
+        "intrusions": "Intrusions Detected",
+        "last_24h": "Last 24 hours",
+        "uptime": "System Uptime",
+        "continuous": "324 Days continuous",
+        "active_alerts": "Active Alerts",
+        "no_threats": "No current threats",
+        "live_surveillance": "Live Surveillance",
+        "security_logs": "Security Logs"
+    },
+    "status": {
+        "normal": "SYSTEM STATUS: NORMAL"
+    },
+    "video_roi": {
+        "connecting": "Connecting...",
+        "system_active": "System Active (Analyzing)",
+        "ready": "Ready to Stream",
+        "disconnected": "Disconnected",
+        "no_video": "No Video Source",
+        "load_video_prompt": "Please load a video file or enable the camera from the toolbar to start detection.",
+        "toolbar": {
+            "load_video": "Load Video",
+            "open_camera": "Open Camera",
+            "close_camera": "Close Camera",
+            "draw_roi": "Draw ROI",
+            "move_roi": "Move ROI",
+            "delete_roi": "Delete ROI",
+            "undo": "Undo",
+            "clear": "Clear",
+            "enter_fullscreen": "Enter Fullscreen",
+            "exit_fullscreen": "Exit Fullscreen",
+            "start_processing": "Start Processing",
+            "stop_processing": "Stop Processing"
+        },
+        "canvas": {
+            "caution": "⚠️ CAUTION: ACTIVITY",
+            "breach": "⚠️ WARNING: BREACH!"
+        }
+    },
+    "auth": {
+        "login_title": "Login",
+        "register_title": "Register",
+        "username": "Username",
+        "password": "Password",
+        "email": "Email",
+        "login_button": "Login",
+        "register_button": "Get Started",
+        "create_account": "Create an Account",
+        "already_have_account": "Already have an account? Login",
+        "error_invalid_credentials": "Invalid username or password.",
+        "error_login_generic": "An error occurred during login. Is the backend running?",
+        "error_registration_generic": "Registration failed. Please try again."
+    },
+    "statistics": {
+        "title": "System Statistics",
+        "subtitle": "Overview of system performance and detection logs.",
+        "reset_stats": "Reset Statistics",
+        "logs_title": "Detection & System Logs",
+        "timestamp": "Timestamp",
+        "type": "Type",
+        "details": "Details",
+        "confirm_reset_title": "Confirm Reset",
+        "confirm_reset_message": "Are you sure you want to clear all statistics and logs? This action cannot be undone.",
+        "reset_success": "Statistics have been reset.",
+        "no_logs": "No logs available.",
+        "showing_page": "Showing page {{current}} of {{total}}"
+    }
+}

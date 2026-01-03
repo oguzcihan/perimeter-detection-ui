@@ -1,0 +1,195 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "bootstrap/dist/css/bootstrap.css";
+@import "./assets/scss/paper-dashboard.scss";
+
+/* @import "perfect-scrollbar/css/perfect-scrollbar.css"; */
+/* Not installed yet, maybe skip or install if broken */
+
+/* Custom / Legacy overrides */
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+        monospace;
+}
+
+/* Authentication Theme - Security & Perimeter Detection */
+.auth-background {
+    background-color: #0d1117;
+    background-image:
+        linear-gradient(rgba(13, 17, 23, 0.9), rgba(13, 17, 23, 0.95)),
+        linear-gradient(0deg, transparent 24%, rgba(32, 226, 215, 0.1) 25%, rgba(32, 226, 215, 0.1) 26%, transparent 27%, transparent 74%, rgba(32, 226, 215, 0.1) 75%, rgba(32, 226, 215, 0.1) 76%, transparent 77%, transparent),
+        linear-gradient(90deg, transparent 24%, rgba(32, 226, 215, 0.1) 25%, rgba(32, 226, 215, 0.1) 26%, transparent 27%, transparent 74%, rgba(32, 226, 215, 0.1) 75%, rgba(32, 226, 215, 0.1) 76%, transparent 77%, transparent);
+    background-size: 100% 100%, 50px 50px, 50px 50px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle scanning line animation */
+.auth-background::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(32, 226, 215, 0.05), transparent);
+    animation: scan 8s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes scan {
+    0% {
+        transform: translateY(-100%);
+    }
+
+    100% {
+        transform: translateY(100%);
+    }
+}
+
+/* Card Styling for Auth */
+.card-auth {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.login-page .card-login,
+.register-page .card-signin,
+.card-register {
+    background-color: #ffffff !important;
+    /* Keep form clear and readable */
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+}
+
+.auth-title {
+    color: #ffffff;
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Glassmorphism Redesign */
+.card-glass {
+    background: rgba(13, 17, 23, 0.7) !important;
+    border: 1px solid rgba(32, 226, 215, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 16px;
+    color: #ffffff;
+}
+
+.card-glass .card-header,
+.card-glass .card-footer {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+.card-glass .card-title {
+    color: #20e2d7 !important;
+    /* Cyan accent */
+    font-family: 'Courier New', monospace;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* Tech Input Fields */
+.input-tech .input-group-text {
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    border: 1px solid rgba(32, 226, 215, 0.3) !important;
+    border-right: none !important;
+    color: #20e2d7 !important;
+}
+
+.input-tech input {
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    border: 1px solid rgba(32, 226, 215, 0.3) !important;
+    border-left: none !important;
+    color: #ffffff !important;
+    font-family: 'Courier New', monospace;
+}
+
+.input-tech input::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.input-tech input:focus {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    border-color: #20e2d7 !important;
+    box-shadow: 0 0 10px rgba(32, 226, 215, 0.2);
+}
+
+.btn-tech {
+    background: linear-gradient(45deg, #20e2d7, #117a8b) !important;
+    /* Cyan gradient */
+    border: none !important;
+    color: #0b0c10 !important;
+    font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(32, 226, 215, 0.4);
+    transition: all 0.3s ease;
+}
+
+.btn-tech:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(32, 226, 215, 0.6);
+}
+
+.auth-title h3 {
+    font-family: 'Courier New', monospace;
+    color: #20e2d7;
+    text-shadow: 0 0 10px rgba(32, 226, 215, 0.5);
+    border-bottom: 2px solid rgba(32, 226, 215, 0.3);
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+/* Improved Auth Readability */
+.text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-weight: 500;
+}
+
+.text-muted:hover {
+    color: #20e2d7 !important;
+}
+
+.input-tech input::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-weight: 500;
+}
+
+/* Main Application Security Background */
+.security-app-bg {
+    background-color: #0d1117;
+    background-image:
+        linear-gradient(rgba(13, 17, 23, 0.95), rgba(13, 17, 23, 0.98)),
+        radial-gradient(circle at 50% 50%, rgba(32, 226, 215, 0.05) 0%, transparent 60%),
+        linear-gradient(0deg, transparent 24%, rgba(32, 226, 215, 0.03) 25%, rgba(32, 226, 215, 0.03) 26%, transparent 27%, transparent 74%, rgba(32, 226, 215, 0.03) 75%, rgba(32, 226, 215, 0.03) 76%, transparent 77%, transparent),
+        linear-gradient(90deg, transparent 24%, rgba(32, 226, 215, 0.03) 25%, rgba(32, 226, 215, 0.03) 26%, transparent 27%, transparent 74%, rgba(32, 226, 215, 0.03) 75%, rgba(32, 226, 215, 0.03) 76%, transparent 77%, transparent);
+    background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
+    background-attachment: fixed;
+    min-height: 100vh;
+}
