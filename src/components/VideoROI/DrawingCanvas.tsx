@@ -1,8 +1,8 @@
-import {Stage, Layer, Rect, Text as KonvaText, Group} from "react-konva";
-import type {Rect as RectType, Tool} from "../../hooks/useROIState";
-import type {KonvaEventObject} from "konva/lib/Node";
-import type {DetectionItem} from "../../types/detection";
-import {useTranslation} from "react-i18next";
+import { Stage, Layer, Rect, Text as KonvaText, Group } from "react-konva";
+import type { Rect as RectType, Tool } from "../../hooks/useROIState";
+import type { KonvaEventObject } from "konva/lib/Node";
+import type { DetectionItem } from "../../types/detection";
+import { useTranslation } from "react-i18next";
 
 
 interface DrawingCanvasProps {
@@ -24,42 +24,48 @@ interface DrawingCanvasProps {
 }
 
 export const DrawingCanvas = ({
-                                  width,
-                                  height,
-                                  nativeSize,
-                                  rectangles,
-                                  newRect,
-                                  tool,
-                                  isDrawing,
-                                  detections = [],
-                                  setNewRect,
-                                  setIsDrawing,
-                                  addRectangle,
-                                  updateRectangle,
-                                  deleteRectangle,
-                                  confirmed_breach = false,
-                                  breach = false
+    width,
+    height,
+    nativeSize,
+    rectangles,
+    newRect,
+    tool,
+    isDrawing,
+    detections = [],
+    setNewRect,
+    setIsDrawing,
+    addRectangle,
+    updateRectangle,
+    deleteRectangle,
+    confirmed_breach = false,
+    breach = false
 
-                              }: DrawingCanvasProps) => {
+}: DrawingCanvasProps) => {
 
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     const scaleX = width / (nativeSize.width || 1);
     const scaleY = height / (nativeSize.height || 1);
     const activeROI = rectangles.length > 0 ? rectangles[rectangles.length - 1] : null;
 
-    const handleMouseDown = (e: KonvaEventObject<MouseEvent>) => {
+    const handleMouseDown = (e: KonvaEventObject<MouseEvent | TouchEvent>) => {
         if (tool !== "draw" || e.target.getClassName() !== "Stage") return;
         const stage = e.target.getStage();
         const pointer = stage?.getPointerPosition();
         if (pointer) {
-            setNewRect({x: pointer.x, y: pointer.y, width: 0, height: 0});
+            setNewRect({ x: pointer.x, y: pointer.y, width: 0, height: 0 });
             setIsDrawing(true);
         }
     };
 
-    const handleMouseMove = (e: KonvaEventObject<MouseEvent>) => {
+    const handleMouseMove = (e: KonvaEventObject<MouseEvent | TouchEvent>) => {
         if (!isDrawing || !newRect || tool !== "draw") return;
+
+        // Prevent scrolling on touch devices while drawing
+        if (e.evt.type === 'touchmove') {
+            e.evt.preventDefault();
+        }
+
         const stage = e.target.getStage();
         const pointer = stage?.getPointerPosition();
         if (pointer && newRect.x !== undefined && newRect.y !== undefined) {
@@ -92,8 +98,8 @@ export const DrawingCanvas = ({
 
 
     const handleDragEnd = (id: number, e: KonvaEventObject<DragEvent>) => {
-        const {x, y} = e.target.position();
-        updateRectangle(id, {x, y});
+        const { x, y } = e.target.position();
+        updateRectangle(id, { x, y });
     };
 
     const handleClick = (id: number) => {
@@ -136,6 +142,9 @@ export const DrawingCanvas = ({
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
+            onTouchStart={handleMouseDown}
+            onTouchMove={handleMouseMove}
+            onTouchEnd={handleMouseUp}
             className="position-absolute top-0 start-0"
             style={{
                 zIndex: 10,

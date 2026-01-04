@@ -5,6 +5,7 @@ import { Container } from "reactstrap";
 
 import Login from "../views/Login.tsx";
 import Register from "../views/Register.tsx";
+import { LanguageSwitcher } from "../components/LanguageSwitcher.tsx";
 
 function Auth() {
     const location = useLocation();
@@ -16,7 +17,10 @@ function Auth() {
     }, []);
 
     return (
-        <div className="wrapper wrapper-full-page h-full min-h-screen">
+        <div className="wrapper wrapper-full-page h-full min-h-screen relative">
+            <div className="absolute top-4 right-4 z-50">
+                <LanguageSwitcher direction="down" />
+            </div>
             <div className="auth-background w-full h-full min-h-screen flex items-center justify-center py-10 px-4">
                 <Container className="w-full max-w-md mx-auto">
                     <div className="auth-title">
