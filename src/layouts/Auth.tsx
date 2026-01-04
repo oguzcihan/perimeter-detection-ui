@@ -6,6 +6,7 @@ import { Container } from "reactstrap";
 import Login from "../views/Login.tsx";
 import Register from "../views/Register.tsx";
 import { LanguageSwitcher } from "../components/LanguageSwitcher.tsx";
+import { Footer } from "../components/Footer.tsx";
 
 function Auth() {
     const location = useLocation();
@@ -29,6 +30,7 @@ function Auth() {
                     {location.pathname === '/register' ? <Register /> : <Login />}
                 </Container>
             </div>
+            <Footer className="absolute bottom-2 left-0 right-0 z-10 text-slate-400/60" />
         </div>
     );
 }

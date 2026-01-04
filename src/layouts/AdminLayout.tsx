@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import { useState, useEffect } from 'react';
 import { SidebarUserMenu } from '../components/SidebarUserMenu';
+import { Footer } from '../components/Footer';
 
 const AdminLayout = () => {
     const { logout, user } = useAuth();
@@ -170,8 +171,11 @@ const AdminLayout = () => {
                 </header>
 
                 {/* Page Content */}
-                <div className="flex-1 overflow-y-auto p-4 lg:p-8 z-10 custom-scrollbar">
-                    <Outlet />
+                <div className="flex-1 overflow-y-auto p-4 lg:p-8 z-10 custom-scrollbar flex flex-col">
+                    <div className="flex-1">
+                        <Outlet />
+                    </div>
+                    <Footer className="mt-8 border-t border-slate-800/50 pt-4" />
                 </div>
             </main>
         </div>
