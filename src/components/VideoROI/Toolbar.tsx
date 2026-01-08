@@ -155,8 +155,10 @@ export const Toolbar = ({
                 {isFullscreen ? <FiMinimize size={20} /> : <FiMaximize size={20} />}
             </button>
 
-            <div className="flex-1 hidden sm:block" /> {/* Spacer Desktop */}
-            <div className="flex-1 sm:hidden" /> {/* Spacer Mobile - pushes play button to end if we want, or remove to keep compact */}
+            <div className="w-px h-8 sm:w-full sm:h-px bg-slate-800 mx-2 sm:mx-0 sm:my-4 flex-shrink-0" />
+
+            {/*<div className="flex-1 hidden sm:block" /> /!* Spacer Desktop *!/*/}
+            {/*<div className="flex-1 sm:hidden" /> /!* Spacer Mobile - pushes play button to end if we want, or remove to keep compact *!/*/}
 
             <button
                 onClick={onToggleStream}
