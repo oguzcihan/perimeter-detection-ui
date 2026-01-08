@@ -4,16 +4,13 @@ import { Toolbar } from '../components/VideoROI/Toolbar';
 import { DrawingCanvas } from '../components/VideoROI/DrawingCanvas';
 import { useVideoContext } from '../context/VideoContext';
 import { useROIState } from '../hooks/useROIState';
-import type { DetectionItem, DetectionResponse } from '../types/detection';
+import type { DetectionResponse } from '../types/detection';
 import { statsService } from '../services/statsService';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-// Helper types if they are not exported or to match usage
-
 type RectLike = { x: number; y: number; width: number; height: number };
 
-// Helper functions 
 const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
     const s = Math.floor(seconds % 60);
@@ -26,7 +23,6 @@ const toWsUrl = (url: string) => {
     return url;
 };
 
-// Replace the existing captureFrameAsJpeg with this robust version from the working file
 async function captureFrameAsJpeg(
     videoEl: HTMLVideoElement,
     displaySize: { width: number; height: number },
@@ -40,11 +36,9 @@ async function captureFrameAsJpeg(
         throw new Error("Video native size is not available");
     }
 
-    // Calculate scale factors
     const scaleX = nativeW / displaySize.width;
     const scaleY = nativeH / displaySize.height;
 
-    // Logic: If ROI exists, use the last one. If not, use full frame.
     const hasRoi = rectangles.length > 0;
     const roi = hasRoi ? rectangles[rectangles.length - 1] : null;
 
@@ -72,7 +66,7 @@ async function captureFrameAsJpeg(
                 else resolve(b);
             },
             "image/jpeg",
-            0.85 // Quality adjustment
+            0.85
         );
     });
 }
@@ -84,47 +78,27 @@ export default function VideoROI() {
     const mainDisplayRef = useRef<HTMLDivElement>(null);
     const fullscreenContainerRef = useRef<HTMLDivElement>(null);
 
-    // [CONTEXT] Use global video context
     const {
         videoState,
         roiState: globalRoiState,
         handleFileChange,
         handleOpenCamera,
         handleVideoLoaded,
-        updateRectangles, // To sync ROI
+        updateRectangles,
         clearVideo
     } = useVideoContext();
 
-    // Local ROI state for tool interactions, synced with global
     const { state: roiState, setters: roiSetters, actions: roiActions } = useROIState();
 
-    // Sync Global ROI -> Local ROI on mount/update
-    useEffect(() => {
-        // Only if local is empty/different? 
-        // Simple strategy: Always load global into local when mounting or global changes meaningfully?
-        // But local drawing updates local state first.
-        // Let's rely on local state for drawing, and commit to global on change.
-        if (globalRoiState.rectangles !== roiState.rectangles) {
-            // CAUTION: This might cause loops.
-            // Ideally we just pass global rects to Canvas, and actions update global rects directly.
-            // But existing hooks logic is bound to local state.
-            // Let's set local state ONE WAY (Global -> Local) initially?
-        }
-    }, []); // This is hard to get right with two sources of truth.
-
-    // Better strategy: 
-    // Use `roiState` from `useROIState` as the UI state.
-    // When `roiState.rectangles` changes, call `updateRectangles`.
     useEffect(() => {
         updateRectangles(roiState.rectangles);
     }, [roiState.rectangles, updateRectangles]);
 
-    // When mounting, if global has rects, set them locally.
     useEffect(() => {
         if (globalRoiState.rectangles && globalRoiState.rectangles.length > 0 && roiState.rectangles.length === 0) {
             roiSetters.setRectangles(globalRoiState.rectangles);
         }
-    }, [globalRoiState.rectangles]); // Run once mostly
+    }, [globalRoiState.rectangles]);
 
     const [videoSize, setVideoSize] = useState({ width: 640, height: 480 });
     const [isFullscreen, setIsFullscreen] = useState(false);
@@ -138,10 +112,8 @@ export default function VideoROI() {
     const [isLoading, setIsLoading] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
 
-    // [TYPE SAFE] State updated with DetectionResponse
     const [lastResult, setLastResult] = useState<DetectionResponse | null>(null);
 
-    // [NEW] Time states
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const isWaitingForResponseRef = useRef(false);
@@ -204,11 +176,11 @@ export default function VideoROI() {
         }
     }, [videoState.isCameraActive]);
 
-
-    // Frame processing loop
-    // Frame processing loop - Logic from working file
     const processFrame = useCallback(async () => {
-        if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
+        if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+            if (isStreamingRef.current) stopRealtimeStream();
+            return;
+        }
         if (!isStreamingRef.current) return;
 
         const videoEl = videoRef.current;
@@ -223,8 +195,7 @@ export default function VideoROI() {
         }
 
         try {
-            const rects = roiRectsRef.current; // Get current ROIs
-            // Pass the correct parameters to the capture function
+            const rects = roiRectsRef.current;
             const blob = await captureFrameAsJpeg(
                 videoEl,
                 { width: videoSizeRef.current.width, height: videoSizeRef.current.height },
@@ -244,11 +215,12 @@ export default function VideoROI() {
         } catch (err) {
             isWaitingForResponseRef.current = false;
             console.error("Frame capture error:", err);
+            // Don't stop immediately on single frame error, retry next frame
+            requestRef.current = requestAnimationFrame(processFrame);
         }
     }, [stopRealtimeStream]);
 
     const connectWebSocket = useCallback(() => {
-        // Prevent multiple connections
         if (wsRef.current && (wsRef.current.readyState === WebSocket.CONNECTING || wsRef.current.readyState === WebSocket.OPEN)) {
             return;
         }
@@ -271,19 +243,15 @@ export default function VideoROI() {
             if (!isStreamingRef.current) return;
             isWaitingForResponseRef.current = false;
             try {
-                // Restore simple message handling without complex client-side filtering
                 const data: DetectionResponse = JSON.parse(evt.data);
                 setLastResult(data);
 
-                // Keep stats service if you really need it, otherwise remove these lines
-                // or ensure they don't block the render.
                 if (data.detections && data.detections.length > 0) {
                     statsService.incrementDetection(data.detections.length);
                 }
                 if (data.confirmed_breach) {
                     statsService.incrementAlarm();
                 }
-
             } catch (e) {
                 console.error("Failed to parse websocket message", e);
             }
@@ -306,33 +274,48 @@ export default function VideoROI() {
     }, [stopRealtimeStream]);
 
     const startProcessing = useCallback(() => {
-        if (!videoRef.current || !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
+        const video = videoRef.current;
+        if (!video || !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+            console.warn("Cannot start processing: Video or WS not ready");
+            return;
+        }
+
+        // [FIX] Auto-rewind if video has ended
+        if (video.ended) {
+            video.currentTime = 0;
+        }
 
         setIsStreaming(true);
         isStreamingRef.current = true;
 
-        // Simple play and loop logic from the working file
-        videoRef.current.play()
+        video.play()
             .then(() => {
                 requestRef.current = requestAnimationFrame(processFrame);
             })
-            .catch(e => console.error("Video play failed:", e));
-    }, [processFrame]);
+            .catch(e => {
+                console.error("Video play failed:", e);
+                // [FIX] Ensure state is reset if play fails (e.g. autoplay policy)
+                stopRealtimeStream();
+            });
+    }, [processFrame, stopRealtimeStream]);
 
     const handleToggleStream = () => {
-        if (isConnected) {
+        const socketActive = wsRef.current && wsRef.current.readyState === WebSocket.OPEN;
+
+        if (socketActive) {
             if (isStreaming) {
                 stopRealtimeStream();
             } else {
                 startProcessing();
             }
         } else {
+            // [FIX] If state says connected but socket is dead, reset and reconnect
+            setIsConnected(false);
             if (!isLoading) {
                 connectWebSocket();
             }
         }
     };
-
 
     const closeWebSocket = useCallback(() => {
         isStreamingRef.current = false;
@@ -345,7 +328,6 @@ export default function VideoROI() {
         setIsStreaming(false);
     }, []);
 
-
     useEffect(() => {
         if (isConnected && !isStreaming && shouldAutoStartRef.current) {
             startProcessing();
@@ -356,14 +338,13 @@ export default function VideoROI() {
     const handleLoadedMetadata = (e: React.SyntheticEvent<HTMLVideoElement>) => {
         const video = e.currentTarget;
         setDuration(video.duration);
-        handleVideoLoaded(video); // Use context action
+        handleVideoLoaded(video);
     };
 
     const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
         setCurrentTime(e.currentTarget.currentTime);
     };
 
-    // [NEW] Effect to attach stream to video element when using Camera in Context
     useEffect(() => {
         if (videoState.isCameraActive && videoState.stream && videoRef.current) {
             videoRef.current.srcObject = videoState.stream;
@@ -374,43 +355,10 @@ export default function VideoROI() {
     }, [videoState.isCameraActive, videoState.stream]);
 
     useEffect(() => {
-        // We only want to clean up when the component unmounts or video source changes.
-        // We DO NOT call connectWebSocket() here anymore.
         return () => {
-            // We DO NOT close websocket on unmount if we want to persist state?
-            // But websocket is local to this component (state `wsRef`).
-            // If we navigate away, this component unmounts.
-            // The requirement says: "Video is not destroyed when leaving".
-            // But "Detection result" vs "Video Source".
-            // Detection relies on WebSocket pushing frames from this component.
-            // If this component unmounts, the frame loop stops.
-            // So detection STOPS naturally.
-            // But the user wants video to persist.
-
-            // Check if we need to close WS.
             closeWebSocket();
         };
     }, [closeWebSocket]);
-
-    // useEffect(() => {
-    //     const videoEl = videoRef.current;
-    //     const handleEnded = () => {
-    //         console.log("Video ended (Event listener)");
-    //         stopRealtimeStream();
-    //         closeWebSocket();
-    //
-    //         if (videoEl && !videoEl.paused) {
-    //             videoEl.pause();
-    //         }
-    //     };
-    //
-    //     if (videoEl) {
-    //         videoEl.addEventListener('ended', handleEnded);
-    //     }
-    //     return () => {
-    //         if (videoEl) videoEl.removeEventListener('ended', handleEnded);
-    //     };
-    // }, [stopRealtimeStream, closeWebSocket]);
 
     useEffect(() => {
         if (videoState.videoUrl || videoState.isCameraActive) {
@@ -445,7 +393,6 @@ export default function VideoROI() {
     return (
         <div className="flex flex-col h-full w-full">
             <div ref={fullscreenContainerRef} className="flex flex-col-reverse sm:flex-row h-[calc(100vh-140px)] sm:h-[calc(100vh-64px)] w-full bg-slate-900/50">
-                {/* TOOLBAR SIDE */}
                 <Toolbar
                     tool={roiState.tool}
                     setTool={roiSetters.setTool}
@@ -456,16 +403,10 @@ export default function VideoROI() {
                         setIsStreaming(false);
                         isStreamingRef.current = false;
                         const file = e.target.files?.[0] ?? null;
-
-                        // Use Context Action
                         handleFileChange(e);
-
-                        // [STATS]
                         if (file) statsService.incrementVideoSession(file.name);
-
                         setLastResult(null);
                         closeWebSocket();
-                        // Reset time
                         setDuration(0);
                         setCurrentTime(0);
                     }}
@@ -474,15 +415,9 @@ export default function VideoROI() {
                         setIsStreaming(false);
                         isStreamingRef.current = false;
                         closeWebSocket();
-
-                        // Use Context Action
                         handleOpenCamera();
-
-                        // [STATS]
                         statsService.incrementCameraSession();
-
                         setLastResult(null);
-                        // Reset time
                         setDuration(0);
                         setCurrentTime(0);
                     }}
@@ -498,7 +433,7 @@ export default function VideoROI() {
                         setDuration(0);
                         setCurrentTime(0);
                         clearVideo();
-                        roiSetters.setRectangles([]); // Clear local ROI too
+                        roiSetters.setRectangles([]);
                     }}
                     onToggleFullscreen={handleToggleFullscreen}
                     isStreaming={isStreaming}
@@ -506,17 +441,15 @@ export default function VideoROI() {
                     isLoading={isLoading}
                 />
 
-                {/* VIDEO DISPLAY AREA */}
                 <div
                     ref={mainDisplayRef}
                     className="flex-1 flex justify-center items-center bg-slate-900/50 p-6 relative overflow-hidden"
                 >
-                    {/* Background Grid for aesthetics */}
                     <div className="absolute inset-0 pointer-events-none"
-                        style={{
-                            backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(16, 185, 129, 0.1) 1px, transparent 0)',
-                            backgroundSize: '40px 40px'
-                        }}
+                         style={{
+                             backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(16, 185, 129, 0.1) 1px, transparent 0)',
+                             backgroundSize: '40px 40px'
+                         }}
                     ></div>
 
                     {videoState.videoUrl || videoState.isCameraActive ? (
@@ -560,9 +493,11 @@ export default function VideoROI() {
                                 updateRectangle={roiActions.updateRectangle}
                                 deleteRectangle={roiActions.deleteRectangle}
                                 confirmed_breach={lastResult?.confirmed_breach}
+                                collision={lastResult?.collision}
+                                confirmed_collision={lastResult?.confirmed_collision}
+                                collision_pairs={lastResult?.collision_pairs}
                             />
 
-                            {/* Status Indicator (Top Right) */}
                             <div
                                 className="absolute top-4 right-4 px-3 py-1.5 rounded-lg backdrop-blur-md bg-slate-900/80 border border-slate-700/50 text-emerald-400 flex items-center gap-2 text-sm font-medium shadow-lg z-20"
                             >
@@ -582,13 +517,12 @@ export default function VideoROI() {
                                 )}
                             </div>
 
-                            {/* [NEW] Video Time Indicator (Bottom Left) */}
                             {videoState.videoUrl && !videoState.isCameraActive && (
                                 <div
                                     className="absolute bottom-4 left-4 px-3 py-1.5 rounded-lg backdrop-blur-md bg-slate-900/80 border border-slate-700/50 text-slate-300 font-mono text-xs z-20 shadow-lg"
                                 >
                                     {formatTime(currentTime)} <span
-                                        className="text-slate-500">/</span> {formatTime(duration)}
+                                    className="text-slate-500">/</span> {formatTime(duration)}
                                 </div>
                             )}
                         </div>

@@ -4,7 +4,6 @@ import type { KonvaEventObject } from "konva/lib/Node";
 import type { DetectionItem } from "../../types/detection";
 import { useTranslation } from "react-i18next";
 
-
 interface DrawingCanvasProps {
     width: number;
     height: number;
@@ -21,26 +20,32 @@ interface DrawingCanvasProps {
     deleteRectangle: (id: number) => void;
     confirmed_breach?: boolean;
     breach?: boolean;
+    // New Collision Props
+    collision?: boolean;
+    confirmed_collision?: boolean;
+    collision_pairs?: number[][];
 }
 
 export const DrawingCanvas = ({
-    width,
-    height,
-    nativeSize,
-    rectangles,
-    newRect,
-    tool,
-    isDrawing,
-    detections = [],
-    setNewRect,
-    setIsDrawing,
-    addRectangle,
-    updateRectangle,
-    deleteRectangle,
-    confirmed_breach = false,
-    breach = false
-
-}: DrawingCanvasProps) => {
+                                  width,
+                                  height,
+                                  nativeSize,
+                                  rectangles,
+                                  newRect,
+                                  tool,
+                                  isDrawing,
+                                  detections = [],
+                                  setNewRect,
+                                  setIsDrawing,
+                                  addRectangle,
+                                  updateRectangle,
+                                  deleteRectangle,
+                                  confirmed_breach = false,
+                                  breach = false,
+                                  collision = false,
+                                  confirmed_collision = false,
+                                  collision_pairs = []
+                              }: DrawingCanvasProps) => {
 
     const { t } = useTranslation();
 
@@ -61,7 +66,6 @@ export const DrawingCanvas = ({
     const handleMouseMove = (e: KonvaEventObject<MouseEvent | TouchEvent>) => {
         if (!isDrawing || !newRect || tool !== "draw") return;
 
-        // Prevent scrolling on touch devices while drawing
         if (e.evt.type === 'touchmove') {
             e.evt.preventDefault();
         }
@@ -96,7 +100,6 @@ export const DrawingCanvas = ({
         setNewRect(null);
     };
 
-
     const handleDragEnd = (id: number, e: KonvaEventObject<DragEvent>) => {
         const { x, y } = e.target.position();
         updateRectangle(id, { x, y });
@@ -108,29 +111,22 @@ export const DrawingCanvas = ({
         }
     };
 
-    // Triggered when mouse enters the rectangle
     const handleMouseEnter = (e: KonvaEventObject<MouseEvent>) => {
-        // Change cursor only if 'delete' or 'move' tool is active
-
         const stage = e.target.getStage();
         const container = stage?.container();
         if (container) {
             if (tool === "delete") {
                 container.style.cursor = "pointer";
             } else if (tool === "move" || tool === "draw") {
-                // Allow move cursor if we are in move OR draw mode
                 container.style.cursor = "move";
             }
         }
-
     };
 
-    // Triggered when mouse leaves the rectangle
     const handleMouseLeave = (e: KonvaEventObject<MouseEvent>) => {
         const stage = e.target.getStage();
         const container = stage?.container();
         if (container) {
-            // Reset cursor to default
             container.style.cursor = "default";
         }
     };
@@ -152,7 +148,7 @@ export const DrawingCanvas = ({
             }}
         >
             <Layer>
-                {/* ROI RECTANGLES (YELLOW) */}
+                {/* ROI RECTANGLES */}
                 {rectangles.map((rect) => (
                     <Rect
                         key={rect.id}
@@ -186,7 +182,14 @@ export const DrawingCanvas = ({
             {/* MODEL RESULTS LAYER */}
             <Layer>
                 {detections.map((det, i) => {
-                    // Coordinate transformation
+                    // Flatten collision_pairs to easily check if this track_id is involved
+                    // Safety check: collision_pairs might be undefined
+                    const flatPairs = collision_pairs ? collision_pairs.flat() : [];
+
+                    // Check if this detection is part of a collision pair
+                    // Note: 'track_id' must exist on detection item from backend
+                    const isInCollision = det.track_id !== undefined && flatPairs.includes(det.track_id);
+
                     const roiNativeX = activeROI ? (activeROI.x / scaleX) : 0;
                     const roiNativeY = activeROI ? (activeROI.y / scaleY) : 0;
 
@@ -197,11 +200,11 @@ export const DrawingCanvas = ({
                     const finalW = boxW * scaleX;
                     const finalH = boxH * scaleY;
 
-                    // UPDATED: Color selection based on alert status
-                    // Alert true -> Red, false -> Green
-                    const statusColor = det.alert ? "red" : "#00FF00";
+                    // COLOR LOGIC: Collision (Purple) > Alert (Red) > Normal (Green)
+                    let statusColor = "#00FF00"; // Green
+                    if (det.alert) statusColor = "red";
+                    if (isInCollision) statusColor = "#CC00FF"; // Purple
 
-                    // Text: Label + Distance
                     const labelText = `${det.label} ${det.distance_meters}m`;
 
                     return (
@@ -210,7 +213,7 @@ export const DrawingCanvas = ({
                                 width={finalW}
                                 height={finalH}
                                 stroke={statusColor}
-                                strokeWidth={det.alert ? 4 : 2}
+                                strokeWidth={det.alert || isInCollision ? 4 : 2}
                                 shadowColor="black"
                                 shadowBlur={5}
                             />
@@ -223,11 +226,20 @@ export const DrawingCanvas = ({
                                 shadowColor="black"
                                 shadowBlur={2}
                             />
+                            {isInCollision && (
+                                <KonvaText
+                                    y={finalH + 5}
+                                    text="COLLISION"
+                                    fill="#CC00FF"
+                                    fontSize={14}
+                                    fontStyle="bold"
+                                />
+                            )}
                         </Group>
                     );
                 })}
 
-                {/* GLOBAL BREACH WARNING (LARGE OVERLAY TEXT) */}
+                {/* BREACH WARNING */}
                 {breach && !confirmed_breach && (
                     <Group x={width / 2 - 150} y={50}>
                         <Rect
@@ -264,6 +276,30 @@ export const DrawingCanvas = ({
                         />
                         <KonvaText
                             text={t('video_roi.canvas.breach')}
+                            fontSize={24}
+                            fontStyle="bold"
+                            fill="white"
+                            width={300}
+                            padding={12}
+                            align="center"
+                        />
+                    </Group>
+                )}
+
+                {/* COLLISION WARNING OVERLAY */}
+                {collision && (
+                    <Group x={width / 2 - 150} y={110}>
+                        <Rect
+                            width={300}
+                            height={50}
+                            fill="#CC00FF"
+                            cornerRadius={5}
+                            opacity={0.9}
+                            shadowColor="black"
+                            shadowBlur={10}
+                        />
+                        <KonvaText
+                            text="COLLISION DETECTED"
                             fontSize={24}
                             fontStyle="bold"
                             fill="white"
